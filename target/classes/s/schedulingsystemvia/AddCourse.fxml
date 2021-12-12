@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="s.schedulingsystemvia.controllers.AddCourseViewController">
+   <left>
+      <AnchorPane prefHeight="400.0" prefWidth="262.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="64.0" layoutY="59.0" prefHeight="42.0" prefWidth="139.0" text="Add course">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+   </left>
+   <right>
+      <AnchorPane prefHeight="400.0" prefWidth="337.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="errorLabel" layoutX="21.0" layoutY="309.0" text="errorLabel" textFill="RED" />
+            <TextField fx:id="courseName" layoutX="95.0" layoutY="60.0" promptText="Enter course name" />
+            <TextField fx:id="courseDescription" layoutX="76.0" layoutY="125.0" prefHeight="26.0" prefWidth="185.0" promptText="Enter description of the course" />
+            <DatePicker fx:id="startDate" layoutX="82.0" layoutY="188.0" promptText="start date" />
+            <DatePicker fx:id="endDate" layoutX="82.0" layoutY="248.0" promptText="end date" />
+            <Button layoutX="236.0" layoutY="314.0" mnemonicParsing="false" onAction="#onAddCourse" text="Add" />
+            <Button layoutX="30.0" layoutY="354.0" mnemonicParsing="false" onAction="#onCancel" text="Cancel" />
+         </children>
+      </AnchorPane>
+   </right>
+</BorderPane>

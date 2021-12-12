@@ -1,0 +1,46 @@
+<via>
+    <time_table>
+        <programe>Software Technology Engineering</programe>
+        <semester>1</semester>
+        <class>Z</class>
+        <week>
+            <number>44</number>
+            <lesson>
+                <start>MO-08:20</start>
+                <end>MO-11:50</end>
+                <course>SDJ</course>
+                <teacher>Steffen Vissing Andersen</teacher>
+                <description>OOP</description>
+            </lesson>
+            <lesson>
+                <start>MO-08:20</start>
+                <end>MO-11:50</end>
+                <course>SDJ</course>
+                <teacher>Steffen Vissing Andersen</teacher>
+                <description>OOP</description>
+            </lesson>
+            <lesson>
+                <start>MO-08:20</start>
+                <end>MO-11:50</end>
+                <course>SDJ</course>
+                <teacher>Steffen Vissing Andersen</teacher>
+                <description>OOP</description>
+            </lesson>
+            <lesson>
+                <start>MO-08:20</start>
+                <end>MO-11:50</end>
+                <course>SDJ</course>
+                <teacher>Steffen Vissing Andersen</teacher>
+                <description>OOP</description>
+            </lesson>
+            <lesson>
+                <start>MO-08:20</start>
+                <end>MO-11:50</end>
+                <course>SDJ</course>
+                <teacher>Steffen Vissing Andersen</teacher>
+                <description>OOP</description>
+            </lesson>
+        </week>
+    </time_table>
+
+</via>

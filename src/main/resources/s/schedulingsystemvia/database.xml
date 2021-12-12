@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database>
+  <teacher>
+    <name>Steffen Vissing Andersen</name>
+    <VIANumber>234</VIANumber>
+  </teacher>
+  <teacher>
+    <name>Klaus Bøgestrand</name>
+    <VIANumber>834</VIANumber>
+  </teacher>
+  <teacher>
+    <name>Line Lindhardt Egsgaard</name>
+    <VIANumber>233</VIANumber>
+  </teacher>
+  <teacher>
+    <name>Io Odderskov</name>
+    <VIANumber>239</VIANumber>
+  </teacher>
+  <teacher>
+    <name>Mona Wendel Andersen</name>
+    <VIANumber>239</VIANumber>
+  </teacher>
+  <teacher>
+    <name>Jane Doe</name>
+    <VIANumber>254</VIANumber>
+  </teacher>
+  <teacher>
+    <name>John Doe</name>
+    <VIANumber>323</VIANumber>
+  </teacher>
+  <classroom>
+    <name>C05.16b</name>
+    <capacity>40</capacity>
+  </classroom>
+  <course>
+    <name>Responsive Web Design</name>
+    <shortcut>RWD1</shortcut>
+    <ects>5</ects>
+    <teacherName>Line Lindhardt Egsgaard</teacherName>
+  </course>
+  <course>
+    <name>Discrete Mathematics and Algorithms</name>
+    <shortcut>DMA1</shortcut>
+    <ects>5</ects>
+    <teacherName>Io Odderskov</teacherName>
+  </course>
+  <course>
+    <name>Software Development with UML and Java</name>
+    <shortcut>SDJ1</shortcut>
+    <ects>10</ects>
+    <teacherName>Steffen Vissing Andersen</teacherName>
+    <teacherName>Klaus Bøgestrand</teacherName>
+  </course>
+  <course>
+    <name>Semester Project</name>
+    <shortcut>SEP1</shortcut>
+    <ects>5</ects>
+    <teacherName>Mona Wendel Andersen</teacherName>
+    <teacherName>Steffen Vissing Andersen</teacherName>
+  </course>
+  <course>
+    <name>Software Engineering</name>
+    <shortcut>SWE1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Database Systems</name>
+    <shortcut>DBS1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Software Development with UML and Java</name>
+    <shortcut>SDJ2</shortcut>
+    <ects>10</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Semester Project</name>
+    <shortcut>SEP2</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>.NET Programming</name>
+    <shortcut>DNP1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Computer Architecture and Organization</name>
+    <shortcut>CAO1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Software Development with UML and Java</name>
+    <shortcut>SDJ3</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Networking and Security</name>
+    <shortcut>NES1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Semester Project</name>
+    <shortcut>SEP3</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Android Development</name>
+    <shortcut>AND1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Embedded Software</name>
+    <shortcut>ESW1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Data Analytics Infrastructure</name>
+    <shortcut>DAI1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>DevOps and Cloud</name>
+    <shortcut>DOC1</shortcut>
+    <ects>5</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <course>
+    <name>Semester Project</name>
+    <shortcut>SEP4</shortcut>
+    <ects>10</ects>
+    <teacherName>John Doe</teacherName>
+  </course>
+  <class>
+    <name>Z</name>
+    <semester>1</semester>
+    <programme>Software Technology Engineering</programme>
+    <courseName>RWD1</courseName>
+    <courseName>SDJ1</courseName>
+    <courseName>DMA1</courseName>
+    <courseName>SEP1</courseName>
+  </class>
+  <timeTable>
+    <programme>Software Technology Engineering</programme>
+    <semester>1</semester>
+    <className>Z</className>
+    <lesson>
+      <start>01 06/12/2021 08:20</start>
+      <end>01 06/12/2021 11:50</end>
+      <courseName>SDJ1</courseName>
+      <classroomName>C05.16b</classroomName>
+      <teacherName>Steffen Vissing Andersen</teacherName>
+    </lesson>
+  </timeTable>
+  <student>
+    <name>Tomas Gres</name>
+    <birthday>28/09/2001</birthday>
+    <gender>Male</gender>
+    <programme>Software Technology Engineering</programme>
+    <className>Z</className>
+    <semester>1</semester>
+    <ECTSPoints>0</ECTSPoints>
+    <VIANumber>315185</VIANumber>
+  </student>
+</database>
