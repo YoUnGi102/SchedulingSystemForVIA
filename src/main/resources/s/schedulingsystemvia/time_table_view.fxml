@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -17,28 +15,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="s.schedulingsystemvia.controllers.TimeTableViewController">
-   <top>
-      <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </top>
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -90,13 +69,21 @@
             </HBox>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <ImageView fx:id="arrowLeft" fitHeight="50.0" fitWidth="50.0" layoutX="-40.0" layoutY="-40.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <ImageView fx:id="arrowRight" fitHeight="50.0" fitWidth="50.0" layoutX="-30.0" layoutY="-30.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <Label fx:id="weekLabel" alignment="CENTER" layoutX="515.0" layoutY="25.0" text="Week 43" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="10.0">
+                  <Label fx:id="weekLabel" alignment="CENTER" layoutX="515.0" layoutY="25.0" text="Week" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="480.0" AnchorPane.rightAnchor="480.0" AnchorPane.topAnchor="10.0">
                      <font>
                         <Font size="27.0" />
                      </font>
                   </Label>
+                  <Button layoutX="14.0" layoutY="20.0" minHeight="50.0" mnemonicParsing="false" onAction="#leftArrow" prefWidth="50.0" text="&lt;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="1005.0" layoutY="11.0" minHeight="50.0" mnemonicParsing="false" onAction="#rightArrow" prefWidth="50.0" text="&gt;" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <font>
+                        <Font name="System Bold" size="20.0" />
+                     </font>
+                  </Button>
                </children>
             </AnchorPane>
             <ScrollPane prefHeight="660.0" prefWidth="1080.0">
@@ -350,4 +337,22 @@
          </children>
       </VBox>
    </center>
+   <bottom>
+      <AnchorPane prefHeight="50.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="generate" mnemonicParsing="false" text="Generate New Test Week" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="425.0" AnchorPane.rightAnchor="425.0" AnchorPane.topAnchor="10.0" />
+         </children>
+      </AnchorPane>
+   </bottom>
+   <top>
+       <MenuBar>
+           <Menu fx:id="timeTableItem" mnemonicParsing="false" text="Menu">
+               <items>
+                   <MenuItem mnemonicParsing="false" text="Time Table" />
+                   <MenuItem mnemonicParsing="false" onAction="#setStudentListView" text="Student List" />
+                   <MenuItem mnemonicParsing="false" onAction="#setLessonListView" text="Lesson List"/>
+               </items>
+           </Menu>
+       </MenuBar>
+   </top>
 </BorderPane>

@@ -48,6 +48,15 @@ public class Student {
         return VIANumber;
     }
 
+    public void setStudent(Student student){
+        this.name = student.name;
+        this.VIANumber = student.VIANumber;
+        this.birthday = student.birthday;
+        this.studentClass = student.studentClass;
+        this.ECTSPoints = student.ECTSPoints;
+        this.gender = student.gender;
+    }
+
     public enum Gender{
         MALE,
         FEMALE,

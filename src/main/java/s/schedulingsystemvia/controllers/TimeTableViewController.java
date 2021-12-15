@@ -1,33 +1,35 @@
 package s.schedulingsystemvia.controllers;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
-import s.schedulingsystemvia.Lesson;
-import s.schedulingsystemvia.ViewHandler;
+import s.schedulingsystemvia.application.ViewHandler;
+import s.schedulingsystemvia.generator.Lesson;
+import s.schedulingsystemvia.generator.TimeTable;
 import s.schedulingsystemvia.database.Database;
 import s.schedulingsystemvia.generator.Class;
-import s.schedulingsystemvia.generator.Classroom;
-import s.schedulingsystemvia.generator.Course;
-import s.schedulingsystemvia.generator.Teacher;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.IsoFields;
 import java.util.ResourceBundle;
 
+import static s.schedulingsystemvia.generator.TimeTable.ZONE_ID;
+
 public class TimeTableViewController implements Initializable {
+
+    // TODO TEACHERS CANNOT HAVE MULTIPLE LESSONS AT THE SAME TIME
 
     // TODO GENERATION FOR MULTIPLE CLASSES
     // TODO EDITING LESSONS
     // TODO ADDING LESSONS
+    // TODO LEFT AND RIGHT ARROW ICONS
 
     @FXML
     private GridPane gridPane;
@@ -42,59 +44,28 @@ public class TimeTableViewController implements Initializable {
     private ChoiceBox<Class> aClass;
 
     @FXML
-    private ImageView arrowLeft, arrowRight;
-
-    @FXML
     private Label weekLabel;
 
     private Class currentClass;
     private int currentWeek;
     private int currentYear;
 
+    private TimeTable timeTable;
+
+    ViewHandler handler;
+
     public TimeTableViewController() {}
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        currentWeek = 50;
-        currentYear = 2021;
+        currentWeek = ZonedDateTime.of(LocalDateTime.now(), ZONE_ID).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        currentYear = LocalDate.now().getYear();
 
         Database database = Database.getInstance();
 
-        /*
-        Region root = null;
-        try
-        {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource(ViewHandler.LESSON_DIALOG_CONTROLLER_PATH));
-            root = loader.load();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        if(root != null){
-
-            Stage stage = new Stage();
-            stage.setResizable(false);
-            stage.setScene(new Scene(root, 720, 480));
-            stage.showAndWait();
-
-        }*/
-
-        /*
-
-        CalendarGenerator generator = new CalendarGenerator(
-                database.getClassrooms().toArray(new Classroom[0]), database.getClasses().toArray(new Class[0]), 15
-        );
-
-        HashMap<Class, TimeTable> timeTableHashMap = generator.generateTimeTables();
-        TimeTable classZ = timeTableHashMap.get(database.getClass("Software Technology Engineering", 1, "Z"));
-        classZ.resetGridPane(gridPane, currentWeek);
-        setWeek(currentWeek);
-
-        */
+        //TimeTable table = timeTableMap.get(database.getClass("Software Technology Engineering", 1, "Z"));
+        //generator.spreadTimeTable(table);
 
         programme.setItems(database.getProgrammesList());
         programme.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
@@ -110,18 +81,60 @@ public class TimeTableViewController implements Initializable {
             }
         });
 
+        aClass.getSelectionModel().selectedItemProperty().addListener((observableValue, oldVal, newVal) -> {
+            timeTable = database.getTimeTable(newVal);
+            timeTable.resetGridPane(gridPane, currentWeek, currentYear);
+        });
+
     }
 
     public void setWeek(int week){
         weekLabel.setText("Week " + week);
+        timeTable.resetGridPane(gridPane, currentWeek, currentYear);
     }
 
     public static Lesson getNewNode(){
-        LocalDateTime start = LocalDateTime.of(2021, 12, 1, 8, 20);
+        /*LocalDateTime start = LocalDateTime.of(2021, 12, 1, 8, 20);
         LocalDateTime end = LocalDateTime.of(2021, 12, 1, 11, 45);
         Teacher teacher = new Teacher("Stephen Andersen", "932322");
         Lesson node = new Lesson(new Classroom("C05.16", 0), start, end, new Course("Responsive Web Design", "RWD", 5, new Teacher[]{new Teacher("Line", "2355")}));
         node.setColor(Color.YELLOW);
-        return node;
+        return node;*/
+        return null;
+    }
+
+    @FXML
+    private void leftArrow(MouseEvent mouseEvent){
+        if(currentWeek > 1){
+            currentWeek--;
+        }else {
+            currentWeek = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(currentYear-1, 12, 31), LocalTime.of(0,0)), ZONE_ID).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+            currentYear--;
+        }
+        setWeek(currentWeek);
+
+    }
+
+    public void rightArrow(MouseEvent mouseEvent) {
+        int weekMax = ZonedDateTime.of(LocalDateTime.of(LocalDate.of(currentYear-1, 12, 31), LocalTime.of(0,0)), ZONE_ID).get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+        if(currentWeek < weekMax){
+            currentWeek++;
+        }else {
+            currentWeek = 1;
+            currentYear++;
+        }
+        setWeek(currentWeek);
+    }
+
+    public void setViewHandler(ViewHandler handler){
+        this.handler = handler;
+    }
+
+    public void setLessonListView(){
+        handler.openView(ViewHandler.LESSON_LIST_VIEW_PATH);
+    }
+
+    public void setStudentListView(){
+        handler.openView(ViewHandler.STUDENT_LIST_VIEW_PATH);
     }
 }

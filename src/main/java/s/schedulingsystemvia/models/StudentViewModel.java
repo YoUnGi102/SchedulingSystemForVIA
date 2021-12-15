@@ -10,23 +10,17 @@ import static s.schedulingsystemvia.generator.Student.*;
 
 public class StudentViewModel {
 
-  private Student student;
-
   private StringProperty name;
   private StringProperty VIANumber;
   private ObjectProperty<LocalDate> birthday;
   private StringProperty programme;
   private IntegerProperty semester;
   private StringProperty studentClass;
-
+  private Student student;
 
   public StudentViewModel(Student student){
-    name = new SimpleStringProperty(student.getName());
-    VIANumber = new SimpleStringProperty(student.getVIANumber());
-    birthday = new SimpleObjectProperty<>(student.getBirthday());
-    programme = new SimpleStringProperty(student.getStudentClass().getProgramme());
-    studentClass = new SimpleStringProperty(student.getStudentClass().getName());
-    semester = new SimpleIntegerProperty(student.getStudentClass().getSemester());
+    this.student = student;
+    reset();
   }
 
   public Student getStudent() {
@@ -79,6 +73,15 @@ public class StudentViewModel {
 
   public StringProperty studentClassProperty() {
     return studentClass;
+  }
+
+  public void reset(){
+    name = new SimpleStringProperty(student.getName());
+    VIANumber = new SimpleStringProperty(student.getVIANumber());
+    birthday = new SimpleObjectProperty<>(student.getBirthday());
+    programme = new SimpleStringProperty(student.getStudentClass().getProgramme());
+    studentClass = new SimpleStringProperty(student.getStudentClass().getName());
+    semester = new SimpleIntegerProperty(student.getStudentClass().getSemester());
   }
 
 }

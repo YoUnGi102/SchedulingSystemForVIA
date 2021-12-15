@@ -1,6 +1,7 @@
 package s.schedulingsystemvia.generator;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class Class {
 
@@ -35,5 +36,20 @@ public class Class {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Class aClass = (Class) o;
+        return semester == aClass.semester && Objects.equals(programme, aClass.programme) && Objects.equals(name, aClass.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(programme, semester, name);
+        result = 31 * result + Arrays.hashCode(courses);
+        return result;
     }
 }

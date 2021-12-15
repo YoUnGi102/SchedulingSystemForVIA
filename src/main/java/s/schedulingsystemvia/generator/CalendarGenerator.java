@@ -1,19 +1,16 @@
 package s.schedulingsystemvia.generator;
 
-import s.schedulingsystemvia.Constants;
-import s.schedulingsystemvia.Lesson;
-import s.schedulingsystemvia.TimeTable;
+import javafx.scene.paint.Color;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class CalendarGenerator {
 
+    public static final int COLOR_COUNT = 20;
     public static final int LESSON_BLOCK = 210;
     public static final int LUNCH_BREAK = 55;
     public static final int NEXT_DAY = 965;
@@ -24,28 +21,35 @@ public class CalendarGenerator {
     private Class[] classes;
     private int weeks; // Without breaks
 
+    HashMap<Class, TimeTable> timeTableHashMap;
+
     // TODO CLASSES HAVE TO BE ORDERED BY SEMESTER
     public CalendarGenerator(Classroom[] classrooms, Class[] classes, int weeks) {
+        timeTableHashMap = new HashMap<>();
         this.classrooms = classrooms;
         this.classes = classes;
         this.weeks = weeks;
         rn = new Random();
     }
 
-    public HashMap<Class, TimeTable> generateTimeTables() {
+    public void generateTimeTables() {
 
-        HashMap<Class, TimeTable> timeTables = new HashMap<>();
+        ArrayList<Classroom> classroomsList = new ArrayList<>(Arrays.asList(classrooms));
+
+        timeTableHashMap = new HashMap<>();
         for (Class c : classes) {
             TimeTable timeTable = new TimeTable(new Class(c.getProgramme(), c.getSemester(), c.getName(), new Course[]{}));
             // TODO THIS WONT WORK IN REAL CASE -> CLASSROOM MIGHT BE OCCUPIED
-            Classroom classroom = classrooms[rn.nextInt(classrooms.length)];
+
+            Classroom classroom = null;
+            if(!classroomsList.isEmpty())
+                classroom = classroomsList.remove(0);
 
             LocalDateTime[][] nextWeekBlocks = getNextWeekBlocks();
             boolean[] used = new boolean[nextWeekBlocks.length];
 
             for (Course course : c.getCourses()) {
                 double minutesPerWeek = (double) course.getDurationPerSemester().toMinutes()/weeks;
-                System.out.println(minutesPerWeek);
                 int n = 1;
                 if(minutesPerWeek > LESSON_BLOCK*2)
                     n = 3;
@@ -56,30 +60,49 @@ public class CalendarGenerator {
                     int lessonIndex = getLessonIndex(used);
                     used[lessonIndex] = true;
                     if(lessonIndex % 2 == 0){
+                        LocalDateTime start = adjustTime(nextWeekBlocks[lessonIndex][1].minus((long) minutesPerWeek/n, ChronoUnit.MINUTES));
+                        LocalDateTime end = adjustTime(nextWeekBlocks[lessonIndex][1]);
+                        classroom = getAvailableClassroom(start, end, classroom);
                         Lesson l = new Lesson(
                                 classroom,
-                                Constants.adjustTime(nextWeekBlocks[lessonIndex][1].minus((long) minutesPerWeek/n, ChronoUnit.MINUTES)),
-                                Constants.adjustTime(nextWeekBlocks[lessonIndex][1]),
-                                course, course.getTeachers());
-                        l.setColor(Constants.getColor(l.getCourse().getShortcut()));
+                                timeTable.getAClass(),
+                                start,
+                                end,
+                                course, course.getTeachers()
+                        );
                         classroom.addLesson(l);
                         timeTable.addLesson(l);
                     }else {
+                        LocalDateTime start = adjustTime(nextWeekBlocks[lessonIndex][0]);
+                        LocalDateTime end = adjustTime(nextWeekBlocks[lessonIndex][0].plus((long) minutesPerWeek/n, ChronoUnit.MINUTES));
+                        classroom = getAvailableClassroom(start, end, classroom);
                         Lesson l = new Lesson(
                                 classroom,
-                                Constants.adjustTime(nextWeekBlocks[lessonIndex][0]),
-                                Constants.adjustTime(nextWeekBlocks[lessonIndex][0].plus((long) minutesPerWeek/n, ChronoUnit.MINUTES)),
+                                timeTable.getAClass(),
+                                start,
+                                end,
                                 course, course.getTeachers());
-                        l.setColor(Constants.getColor(l.getCourse().getShortcut()));
                         classroom.addLesson(l);
                         timeTable.addLesson(l);
                     }
-                    System.out.println(course.getName());
                 }
             }
-            timeTables.put(c, timeTable);
+            timeTableHashMap.put(c, timeTable);
         }
-        return timeTables;
+
+    }
+
+    private Classroom getAvailableClassroom(LocalDateTime start, LocalDateTime end, Classroom classroom){
+        if(classroom != null){
+            return classroom;
+        }else {
+            for (Classroom c : classrooms) {
+                if(c.isAvailable(start, end)){
+                    return c;
+                }
+            }
+            throw new NullPointerException("There are no more available classrooms");
+        }
     }
 
     // TESTED -  WORKING
@@ -117,11 +140,25 @@ public class CalendarGenerator {
 
     }
 
-    // TODO IN TIMETABLE, CHANGE LESSON LIST FROM Map<int[][],Lesson>
-    public void spreadTimeTable(TimeTable timeTable){
-        //ArrayList<Lesson> lessonsInWeek = timeTable.getLessonsInWeek();
-        for (int i = 0; i < weeks; i++) {
+    public void spreadTimeTables(){
+        for (Class c : timeTableHashMap.keySet()) {
+            TimeTable timeTable = timeTableHashMap.get(c);
+            int week = TimeTable.getWeek(timeTable.getLessons().get(0));
+            for (int i = 1; i < weeks+1; i++) {
 
+                ArrayList<Lesson> lessons = timeTable.getLessonsInWeek(week);
+                for (Lesson lesson : lessons) {
+                    Lesson newLesson = new Lesson(
+                            lesson.getClassroom(),
+                            lesson.getStudentClass(),
+                            lesson.getStart().plus(i, ChronoUnit.WEEKS),
+                            lesson.getEnd().plus(i, ChronoUnit.WEEKS),
+                            lesson.getCourse(),
+                            lesson.getTeachers()
+                    );
+                    timeTable.addLesson(newLesson);
+                }
+            }
         }
     }
 
@@ -141,5 +178,43 @@ public class CalendarGenerator {
             }
         }
         return -1;
+    }
+
+    public static LocalDateTime adjustTime(LocalDateTime time){
+        if(time.getMinute() % 5 == 0)
+            return time;
+        else if(time.getMinute() % 10 <= 4)
+            return time.minusMinutes(time.getMinute() % 10);
+        return time.plusMinutes(time.getMinute() % 10);
+    }
+
+    public static Color getColor(int i){
+        return switch (i){
+            case 0 -> Color.valueOf("#CCFF00");
+            case 1 -> Color.valueOf("#CCFFFF");
+            case 2 -> Color.valueOf("#FFFF33");
+            case 3 -> Color.valueOf("#CCCC00");
+            case 4 -> Color.valueOf("#CCCCFF");
+            case 5 -> Color.valueOf("#FFCCFF");
+            case 6 -> Color.valueOf("#FFCCCC");
+            case 7 -> Color.valueOf("#FFCC00");
+            case 8 -> Color.valueOf("#CC9933");
+            case 9 -> Color.valueOf("#CC99FF");
+            case 10 -> Color.valueOf("#FF9999");
+            case 11 -> Color.valueOf("#FF9900");
+            case 12 -> Color.valueOf("#CC66FF");
+            case 13 -> Color.valueOf("#FF66CC");
+            case 14 -> Color.valueOf("#FF6600");
+            case 15 -> Color.valueOf("#CC33FF");
+            case 16 -> Color.valueOf("#CC00FF");
+            case 17 -> Color.valueOf("#6699FF");
+            case 18 -> Color.valueOf("#66CC33");
+            case 19 -> Color.valueOf("#66CCFF");
+            default -> Color.WHITE;
+        };
+    }
+
+    public HashMap<Class, TimeTable> getTimeTableHashMap() {
+        return timeTableHashMap;
     }
 }

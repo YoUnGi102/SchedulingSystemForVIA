@@ -4,8 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
-import s.schedulingsystemvia.ViewHandler;
-import s.schedulingsystemvia.andrei.Student;
+import s.schedulingsystemvia.application.ViewHandler;
 
 public class AddStudentViewController
 {
@@ -17,12 +16,10 @@ public class AddStudentViewController
   private Region root;
   private ViewHandler viewHandler;
 
-  public AddStudentViewController()
-  {
+  public AddStudentViewController() {
   }
 
-  public void init(ViewHandler viewHandler, Region root)
-  {
+  public void init(ViewHandler viewHandler, Region root) {
     this.root = root;
     this.viewHandler = viewHandler;
     reset();
@@ -41,24 +38,25 @@ public class AddStudentViewController
     return root;
   }
 
-  @FXML private void addStudentSubmitButton()
-  {
+  @FXML private void addStudentSubmitButton() {
     errorLabel.setText("");
     try
     {
+      /*
      Student student = new Student(nameTextField.getText(),Integer.parseInt(
          viaNumberTextField.getText()), programmeTextField.getText());
-      viewHandler.openView("list");
+      viewHandler.openView("list");*/
     }
     catch (Exception e)
     {
       errorLabel.setText("illegal" + e.getMessage());
     }
   }
+
   @FXML private void cancelButton()
 
   {
-    viewHandler.openView("list");
+    //viewHandler.openView("list");
   }
 
 }

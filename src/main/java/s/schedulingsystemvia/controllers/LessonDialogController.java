@@ -1,16 +1,9 @@
 package s.schedulingsystemvia.controllers;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.stage.Stage;
-import s.schedulingsystemvia.Lesson;
+import s.schedulingsystemvia.application.ViewHandler;
+import s.schedulingsystemvia.generator.*;
 import s.schedulingsystemvia.database.Database;
-import s.schedulingsystemvia.generator.Class;
-import s.schedulingsystemvia.generator.Classroom;
-import s.schedulingsystemvia.generator.Course;
-import s.schedulingsystemvia.generator.Teacher;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import s.schedulingsystemvia.generator.Class;
 
 import java.net.URL;
 import java.time.LocalDateTime;
@@ -52,8 +46,14 @@ public class LessonDialogController implements Initializable {
 
     private Database database;
 
+    private Lesson lesson;
+    private Stage stage;
+
+    ViewHandler handler;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        System.out.println(this);
 
         database = Database.getInstance();
 
@@ -96,29 +96,35 @@ public class LessonDialogController implements Initializable {
         });
 
         aClass.getSelectionModel().selectedItemProperty().addListener((observableValue, aClass, t1) -> course.setItems(FXCollections.observableArrayList((t1.getCourses()))));
-
         course.getSelectionModel().selectedItemProperty().addListener((observableValue, course, t1) -> {
             teacher.setItems(FXCollections.observableArrayList(t1.getTeachers()));
         });
-
         classroom.getSelectionModel().selectedItemProperty().addListener((observableValue, aClassroom, t1) -> {
 
-        });
-
-        addBtn.setOnAction(e -> {
-            Lesson lesson = new Lesson(
-                    classroom.getValue(),
-                    LocalDateTime.of(date.getValue(), LocalTime.of(Integer.parseInt(startHour.getValue()), Integer.parseInt(startMinute.getValue()))),
-                    LocalDateTime.of(date.getValue(), LocalTime.of(Integer.parseInt(endHour.getValue()), Integer.parseInt(endMinute.getValue()))),
-                    course.getValue(),
-                    teacher.getItems().toArray(new Teacher[0])
-            );
-            database.getTimeTable(aClass.getValue()).addLesson(lesson);
         });
 
         cancelBtn.setOnAction(e -> {
             ((Stage)cancelBtn.getScene().getWindow()).close();
         });
+        addBtn.setOnAction(e -> {
+
+            TimeTable timeTable = database.getTimeTable(aClass.getValue());
+
+            Lesson lesson = new Lesson(
+                    classroom.getValue(),
+                    timeTable.getAClass(),
+                    LocalDateTime.of(date.getValue(), LocalTime.of(Integer.parseInt(startHour.getValue()), Integer.parseInt(startMinute.getValue()))),
+                    LocalDateTime.of(date.getValue(), LocalTime.of(Integer.parseInt(endHour.getValue()), Integer.parseInt(endMinute.getValue()))),
+                    course.getValue(),
+                    teacher.getItems().toArray(new Teacher[0])
+            );
+
+            timeTable.addLesson(lesson);
+            stage = (Stage)addBtn.getScene().getWindow();
+            stage.close();
+
+        });
+
 
     }
 
@@ -132,6 +138,44 @@ public class LessonDialogController implements Initializable {
         }
     }
 
+    public void setLesson(Lesson lesson){
+        this.lesson = lesson;
 
+        addBtn.setText("Save");
+
+        addBtn.setOnAction(e -> {
+            Lesson editLesson = new Lesson(
+                    classroom.getValue(),
+                    this.lesson.getStudentClass(),
+                    LocalDateTime.of(date.getValue(), LocalTime.of(Integer.parseInt(startHour.getValue()), Integer.parseInt(startMinute.getValue()))),
+                    LocalDateTime.of(date.getValue(), LocalTime.of(Integer.parseInt(endHour.getValue()), Integer.parseInt(endMinute.getValue()))),
+                    course.getValue(),
+                    teacher.getItems().toArray(new Teacher[0])
+            );
+            lesson.setLesson(editLesson);
+            ((Stage)(addBtn.getScene().getWindow())).close();
+        });
+
+        date.setValue(lesson.getStart().toLocalDate());
+        int startH = lesson.getStart().getHour();
+        startHour.getSelectionModel().select(String.valueOf((startH<10)?"0"+startH:startH));
+        int startM = lesson.getStart().getMinute();
+        startMinute.getSelectionModel().select(String.valueOf((startM<10)?"0"+startM:startM));
+        int endH = lesson.getEnd().getHour();
+        endHour.getSelectionModel().select(String.valueOf((endH<10)?"0"+endH:endH));
+        int endM = lesson.getEnd().getMinute();
+        endMinute.getSelectionModel().select(String.valueOf((endM<10)?"0"+endM:endM));
+        programme.getSelectionModel().select(lesson.getStudentClass().getProgramme());
+        semester.getSelectionModel().select(lesson.getStudentClass().getSemester());
+        aClass.getSelectionModel().select(lesson.getStudentClass());
+        teacher.getSelectionModel().select(lesson.getTeachers()[0]);
+        course.getSelectionModel().select(lesson.getCourse());
+        classroom.getSelectionModel().select(lesson.getClassroom());
+
+    }
+
+    public void setViewHandler(ViewHandler handler){
+        this.handler = handler;
+    }
 
 }

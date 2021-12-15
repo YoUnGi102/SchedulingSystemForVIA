@@ -1,7 +1,6 @@
 package s.schedulingsystemvia.application;
 
 import javafx.application.Application;
-import s.schedulingsystemvia.ViewHandler;
 import javafx.stage.Stage;
 
 public class SchedulingSystemVIA extends Application {

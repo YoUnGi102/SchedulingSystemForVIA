@@ -7,8 +7,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import s.schedulingsystemvia.Lesson;
-import s.schedulingsystemvia.TimeTable;
+import s.schedulingsystemvia.generator.Lesson;
+import s.schedulingsystemvia.generator.TimeTable;
 import s.schedulingsystemvia.generator.Classroom;
 import s.schedulingsystemvia.generator.Course;
 import s.schedulingsystemvia.generator.Student;
@@ -23,7 +23,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,21 +30,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import static s.schedulingsystemvia.generator.Student.Gender;
-import static s.schedulingsystemvia.generator.Student.*;
 
 public class Database {
 
     public static final ObservableList<String> HOURS_LIST = FXCollections.observableArrayList("8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18");
     public static final ObservableList<String> MINUTES_LIST = FXCollections.observableArrayList("00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55");
-    public static final ObservableList<String> PROGRAMMES_LIST = FXCollections.observableArrayList("Software Technology Engineering", "Climate and Supply Engineering");
     public static final ObservableList<Integer> SEMESTER_LIST = FXCollections.observableArrayList(1, 2, 3, 4, 5, 6, 7);
 
     public static final DateTimeFormatter LESSON_TIME_FORMATTER = DateTimeFormatter.ofPattern("ee dd/MM/yyyy HH:mm");
     public static final DateTimeFormatter BIRTHDATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final String DATABASE_PATH = "src/main/resources/s/schedulingsystemvia/database.xml";
+    private static final String DATABASE_PATH = "src/main/java/s/schedulingsystemvia/resources/database.xml";
 
     private static Database database;
 
@@ -202,8 +198,13 @@ public class Database {
         }
         return null;
     }
+    public void addStudent(Student student){
+        students.add(student);
+        saveAll();
+    }
     public void removeStudent(Student student){
         students.remove(student);
+        database.saveAll();
     }
 
     private void readTeachersList(){
@@ -475,7 +476,7 @@ public class Database {
                                     //case "description" -> description = lessonNodes.item(k).getTextContent();
                                 }
                             }
-                            Lesson lesson = new Lesson(getClassroom(classroom), start, end, getCourse(course), teachers.toArray(new Teacher[0]));
+                            Lesson lesson = new Lesson(getClassroom(classroom), getClass(programme, semester, aClass), start, end, getCourse(course), teachers.toArray(new Teacher[0]));
                             lessons.add(lesson);
                             for (Teacher t : teachers) {
                                 t.addLesson(lesson);
@@ -545,11 +546,25 @@ public class Database {
         return timeTables;
     }
     public TimeTable getTimeTable(Class aClass){
+        System.out.println("TEST-CLASS:" + aClass.getProgramme() + " " + aClass.getSemester() + " " + aClass.getName());
+        System.out.println("LIST-CLASS:" + aClass.getProgramme() + " " + aClass.getSemester() + " " + aClass.getName());
         for (TimeTable timeTable : timeTables) {
-            if(timeTable.getClass().equals(aClass))
+            if(timeTable.getAClass().getProgramme().equals(aClass.getProgramme())
+            && timeTable.getAClass().getSemester() == aClass.getSemester()
+            && timeTable.getAClass().getName().equals(aClass.getName()))
                 return timeTable;
         }
         return null;
+    }
+    public void resetTimeTables(HashMap<Class, TimeTable> timeTableMap){
+        timeTables.clear();
+        for (Class c : timeTableMap.keySet()) {
+            timeTables.add(timeTableMap.get(c));
+        }
+    }
+    public void addLesson(TimeTable timeTable, Lesson lesson){
+        timeTable.addLesson(lesson);
+        saveAll();
     }
     public void removeLesson(Lesson lessonToRemove){
         for (TimeTable timeTable : timeTables) {
@@ -580,10 +595,35 @@ public class Database {
     public ObservableList<Classroom> getAvailableClassroom(LocalDateTime start, LocalDateTime end){
         ObservableList<Classroom> availableClassrooms = FXCollections.observableArrayList();
         for (Classroom classroom : classrooms) {
-            if(!classroom.isOccupied(start, end))
+            if(classroom.isAvailable(start, end))
                 availableClassrooms.add(classroom);
         }
         return availableClassrooms;
+    }
+
+    public ObservableList<StudentViewModel> getStudentViewModelList(){
+        ObservableList<StudentViewModel> studentViewModelList = FXCollections.observableArrayList();
+        for (Student student : students) {
+            studentViewModelList.add(new StudentViewModel(student));
+        }
+        return studentViewModelList;
+    }
+    public ObservableList<StudentViewModel> getSearchedStudents(String name, String VIANumber, String programme, int semester, Class c){
+        ObservableList<StudentViewModel> studentsSearched = FXCollections.observableArrayList();
+        for (Student student : students) {
+            if(programme != null && !student.getStudentClass().getProgramme().equals(programme))
+                continue;
+            if(semester != 0 && student.getStudentClass().getSemester() != semester)
+                continue;
+            if(c != null && !student.getStudentClass().equals(c))
+                continue;
+            if(name != null && !student.getName().contains(name))
+                continue;
+            if(VIANumber != null && !student.getVIANumber().contains(VIANumber))
+                continue;
+            studentsSearched.add(new StudentViewModel(student));
+        }
+        return studentsSearched;
     }
 
     public ObservableList<LessonViewModel> getLessonViewModelList(){
@@ -595,21 +635,38 @@ public class Database {
         }
         return lessons;
     }
-
-    public ObservableList<StudentViewModel> getStudentViewModelList(){
-        ObservableList<StudentViewModel> studentViewModelList = FXCollections.observableArrayList();
-        for (Student student : students) {
-            studentViewModelList.add(new StudentViewModel(student));
-        }
-        return studentViewModelList;
-    }
-
     public ObservableList<Lesson> getLessonsList(LocalDateTime start, LocalDateTime end){
+        // IF BOTH == NULL then it is ALL
         ObservableList<Lesson> lessons = FXCollections.observableArrayList();
         for (TimeTable timeTable : timeTables) {
-            lessons.addAll(timeTable.getLessons());
+            for (Lesson lesson : timeTable.getLessons()) {
+                if(start == null && end == null)
+                    lessons.add(lesson);
+                else if (start == null && lesson.getEnd().isBefore(end))
+                    lessons.add(lesson);
+                else if(end == null && lesson.getStart().isAfter(start))
+                    lessons.add(lesson);
+                else if(start != null && end != null && lesson.getStart().isAfter(start) && lesson.getEnd().isBefore(end))
+                    lessons.add(lesson);
+            }
         }
         return lessons;
     }
+    public ObservableList<LessonViewModel> getSearchedLessons(String programme, int semester, Class c, String course, LocalDateTime start, LocalDateTime end){
+        ObservableList<LessonViewModel> lessonsSearched = FXCollections.observableArrayList();
+        for (Lesson lesson : getLessonsList(start, end)) {
+            if(programme != null && !lesson.getStudentClass().getProgramme().equals(programme))
+                continue;
+            if(semester != 0 && lesson.getStudentClass().getSemester() != semester)
+                continue;
+            if(c != null && !lesson.getStudentClass().equals(c))
+                continue;
+            if(!course.equals("") && !lesson.getCourse().equals(getCourse(course)))
+                continue;
+            lessonsSearched.add(new LessonViewModel(lesson));
+        }
+        return lessonsSearched;
+    }
+
 
 }

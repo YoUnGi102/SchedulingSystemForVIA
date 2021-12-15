@@ -2,21 +2,100 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="720.0" prefWidth="1080.0" spacing="30.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="s.schedulingsystemvia.controllers.StudentListViewController">
+<VBox prefHeight="718.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="s.schedulingsystemvia.controllers.StudentListViewController">
     <children>
-      <HBox prefHeight="100.0" prefWidth="200.0" />
+      <MenuBar>
+         <menus>
+            <Menu fx:id="timeTableItem" mnemonicParsing="false" text="Menu">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#setTimeTableView" text="Time Table" />
+                  <MenuItem mnemonicParsing="false" text="Student List" />
+                  <MenuItem mnemonicParsing="false" onAction="#setLessonListView" text="Lesson List" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+      <HBox prefHeight="53.0" prefWidth="1060.0" spacing="10.0">
+         <children>
+             <VBox prefHeight="82.0" prefWidth="150.0">
+                 <children>
+                     <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Programme">
+                         <VBox.margin>
+                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                         </VBox.margin>
+                     </Label>
+                     <ChoiceBox fx:id="programmeSearch" prefHeight="31.0" prefWidth="150.0">
+                         <VBox.margin>
+                             <Insets bottom="10.0" left="10.0" right="10.0" />
+                         </VBox.margin>
+                     </ChoiceBox>
+                 </children>
+             </VBox>
+             <VBox prefHeight="82.0" prefWidth="102.0">
+                 <children>
+                     <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Semester">
+                         <VBox.margin>
+                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                         </VBox.margin>
+                     </Label>
+                     <ChoiceBox fx:id="semesterSearch" prefHeight="31.0" prefWidth="171.0">
+                         <VBox.margin>
+                             <Insets bottom="10.0" left="10.0" right="10.0" />
+                         </VBox.margin>
+                     </ChoiceBox>
+                 </children>
+             </VBox>
+             <VBox prefHeight="82.0" prefWidth="102.0">
+                 <children>
+                     <Label alignment="CENTER" prefHeight="31.0" prefWidth="150.0" text="Class">
+                         <VBox.margin>
+                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                         </VBox.margin>
+                     </Label>
+                     <ChoiceBox fx:id="classSearch" prefHeight="31.0" prefWidth="171.0">
+                         <VBox.margin>
+                             <Insets bottom="10.0" left="10.0" right="10.0" />
+                         </VBox.margin>
+                     </ChoiceBox>
+                 </children>
+             </VBox>
+             <TextField fx:id="nameSearch" promptText="Name">
+                 <HBox.margin>
+                     <Insets bottom="25.0" left="10.0" right="10.0" top="25.0" />
+                 </HBox.margin>
+             </TextField>
+             <TextField fx:id="numberSearch" promptText="VIA Number">
+                 <HBox.margin>
+                     <Insets bottom="25.0" left="10.0" right="10.0" top="25.0" />
+                 </HBox.margin>
+             </TextField>
 
-          <ScrollPane prefHeight="400.0" prefWidth="1080.0">
-              <content>
-                  <TableView fx:id="studentListTable" prefHeight="720.0" prefWidth="1080.0">
+            <Button mnemonicParsing="false" onAction="#search" prefWidth="100.0" text="Search">
+               <HBox.margin>
+                  <Insets bottom="25.0" left="10.0" right="10.0" top="25.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
+         </VBox.margin></HBox>
+
+          <ScrollPane prefHeight="533.0" prefWidth="1080.0">
+         <content>
+                  <TableView fx:id="studentListTable" prefHeight="600.0" prefWidth="1080.0">
                       <columns>
                           <TableColumn fx:id="nameColumn" prefWidth="180.0" text="Name" />
                           <TableColumn fx:id="VIANumberColumn" prefWidth="180.0" text="VIA Number" />
@@ -26,30 +105,41 @@
                           <TableColumn fx:id="classColumn" prefWidth="140.0" text="Class" />
                       </columns>
                   </TableView>
-              </content>
+         </content>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
           </ScrollPane>
-      <HBox prefHeight="100.0" prefWidth="200.0">
+      <HBox prefHeight="75.0" prefWidth="200.0">
          <children>
 
-                <Button mnemonicParsing="false" onAction="#addStudentButtonPressed" prefHeight="75.0" prefWidth="150.0" text="Add">
+                <Button mnemonicParsing="false" onAction="#addStudent" prefHeight="50.0" prefWidth="150.0" text="Add">
                     <font>
                         <Font size="24.0" />
                     </font>
                <HBox.margin>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                 </Button>
+            <Button mnemonicParsing="false" onAction="#editStudent" prefHeight="38.0" prefWidth="150.0" text="Edit">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </HBox.margin>
+            </Button>
 
-                <Button mnemonicParsing="false" onAction="#removeStudentButtonPressed" prefHeight="75.0" prefWidth="150.0" text="Remove">
+                <Button mnemonicParsing="false" onAction="#removeStudent" prefHeight="38.0" prefWidth="150.0" text="Remove">
                     <font>
                         <Font size="24.0" />
                     </font>
                <HBox.margin>
-                  <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </HBox.margin>
                 </Button>
 
-                <Label fx:id="errorLabel" alignment="CENTER" prefHeight="75.0" prefWidth="300.0" text="ErrorLabel" textFill="#dd1111">
+                <Label fx:id="errorLabel" alignment="CENTER" prefHeight="47.0" prefWidth="519.0" text="ErrorLabel" textFill="#dd1111">
                     <font>
                         <Font size="24.0" />
                     </font>
@@ -58,6 +148,9 @@
                </HBox.margin>
                 </Label>
          </children>
+         <VBox.margin>
+            <Insets />
+         </VBox.margin>
       </HBox>
     </children>
 

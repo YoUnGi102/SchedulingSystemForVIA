@@ -1,22 +1,11 @@
 package s.schedulingsystemvia.generator;
 
-import s.schedulingsystemvia.Lesson;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Classroom {
-
-    // TODO ROOMS CAN BE BOOKED FROM 8:00 to 16:15 FOR LESSONS
-    // TODO DATE FOR LESSON START AND END HAS TO BE SAME
-
-    // WHAT WE KNOW ABOUT THE TIME TABLE
-    // LUNCH BREAK IS 11:50 to 12:45
-    // LESSONS ARE GENERATED FROM 8:20 to 16:15
-    // NOTE: MANUALLY ADDED LESSONS DO NOT HAVE TO FOLLOW THESE RULES
-
 
     private String name;
     private LinkedList<Lesson> scheduledLessons;
@@ -75,13 +64,13 @@ public class Classroom {
         return availableTimes;
     }
 
-    public boolean isOccupied(LocalDateTime start, LocalDateTime end){
+    public boolean isAvailable(LocalDateTime start, LocalDateTime end){
         for (Lesson times : scheduledLessons) {
             if(start.isAfter(times.getStart()) && start.isBefore(times.getEnd()) || end.isAfter(times.getStart()) && end.isBefore(times.getEnd()))
-                return true;
+                return false;
         }
 
-        return false;
+        return true;
     }
 
     public LocalDateTime[] getNextAvailableTime(Duration duration){

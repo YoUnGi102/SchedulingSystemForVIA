@@ -1,7 +1,5 @@
 package s.schedulingsystemvia.generator;
 
-import s.schedulingsystemvia.Lesson;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 

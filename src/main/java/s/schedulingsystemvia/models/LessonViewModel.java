@@ -1,9 +1,8 @@
 package s.schedulingsystemvia.models;
 
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import s.schedulingsystemvia.Lesson;
+import s.schedulingsystemvia.generator.Lesson;
+import s.schedulingsystemvia.generator.Class;
 import s.schedulingsystemvia.generator.Classroom;
 import s.schedulingsystemvia.generator.Course;
 import s.schedulingsystemvia.generator.Teacher;
@@ -19,14 +18,13 @@ public class LessonViewModel {
   private ObjectProperty<LocalDateTime> endTime;
   private ObjectProperty<Course> course;
   private ObjectProperty<Teacher[]> teachers;
+  private ObjectProperty<Class> studentClass;
+  private IntegerProperty semester;
+  private StringProperty programme;
 
   public LessonViewModel(Lesson lesson){
     this.lesson = lesson;
-    classroom = new SimpleObjectProperty<>(lesson.getClassroom());
-    startTime = new SimpleObjectProperty<>(lesson.getStart());
-    endTime = new SimpleObjectProperty<>(lesson.getEnd());
-    course = new SimpleObjectProperty<>(lesson.getCourse());
-    teachers = new SimpleObjectProperty<>(lesson.getTeachers());
+    reset();
   }
 
   public Lesson getLesson() {
@@ -67,4 +65,37 @@ public class LessonViewModel {
   public ObjectProperty<Teacher[]> teachersProperty() {
     return teachers;
   }
+
+  public Class getStudentClass() {
+    return studentClass.get();
+  }
+  public ObjectProperty<Class> studentClassProperty() {
+    return studentClass;
+  }
+
+  public int getSemester() {
+    return semester.get();
+  }
+  public IntegerProperty semesterProperty() {
+    return semester;
+  }
+
+  public String getProgramme() {
+    return programme.get();
+  }
+  public StringProperty programmeProperty() {
+    return programme;
+  }
+
+  public void reset(){
+    classroom = new SimpleObjectProperty<>(lesson.getClassroom());
+    startTime = new SimpleObjectProperty<>(lesson.getStart());
+    endTime = new SimpleObjectProperty<>(lesson.getEnd());
+    course = new SimpleObjectProperty<>(lesson.getCourse());
+    teachers = new SimpleObjectProperty<>(lesson.getTeachers());
+    studentClass = new SimpleObjectProperty<>(lesson.getStudentClass());
+    programme = new SimpleStringProperty(lesson.getStudentClass().getProgramme());
+    semester = new SimpleIntegerProperty(lesson.getStudentClass().getSemester());
+  }
+
 }
